@@ -5,7 +5,7 @@ final lightTheme = ThemeData(
     textTheme: const TextTheme(
       bodyLarge: TextStyle(
           color: Colors.black, fontWeight: FontWeight.bold, fontSize: 25),
-          
     ),
     primaryColor: Colors.purple,
-    scaffoldBackgroundColor: Colors.white);
+    scaffoldBackgroundColor: Colors.white,
+    iconTheme: const IconThemeData(color: Colors.black));

@@ -30,7 +30,7 @@ Widget _buildWithTheme(BuildContext context, state) {
     theme: state,
     themeAnimationCurve: Curves.easeInOut,
     themeAnimationDuration: const Duration(seconds: 1),
-    home: const HomeScreen(),
+    home: HomeScreen(),
   );
 }
 
