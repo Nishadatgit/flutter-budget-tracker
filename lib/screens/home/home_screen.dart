@@ -1,4 +1,8 @@
+import 'package:budget_tracker/logic/cubit/theme_cubit.dart';
+import 'package:budget_tracker/themes/dark_theme.dart';
+import 'package:budget_tracker/themes/light_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -6,7 +10,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    final height = MediaQuery.of(context).size.height;
+    //final height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 80,
@@ -15,6 +19,15 @@ class HomeScreen extends StatelessWidget {
           style: Theme.of(context).textTheme.bodyLarge,
         ),
         actions: [
+          IconButton(
+            onPressed: () {
+              BlocProvider.of<ThemeCubit>(context).switchTheme();
+            },
+            icon: BlocBuilder<ThemeCubit, ThemeData>(
+              builder: (context, state) =>
+                  Icon(state == darkTheme ? Icons.light_mode : Icons.dark_mode),
+            ),
+          ),
           IconButton(
             style: IconButton.styleFrom(
                 backgroundColor: Colors.white, padding: EdgeInsets.zero),
