@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 final darkTheme = ThemeData(
   useMaterial3: true,
+  brightness: Brightness.dark,
   scaffoldBackgroundColor: const Color(0xff302d43),
   textTheme: const TextTheme(
       bodyLarge: TextStyle(

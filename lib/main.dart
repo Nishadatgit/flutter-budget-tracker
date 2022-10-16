@@ -1,10 +1,9 @@
-import 'package:budget_tracker/logic/cubit/theme_cubit.dart';
+import 'package:budget_tracker/logic/theme/theme_cubit.dart';
 import 'package:budget_tracker/screens/home/home_screen.dart';
-import 'package:budget_tracker/themes/dark_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
@@ -14,8 +13,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-        create: (contex) => ThemeCubit(),
+    return MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (ctx) => ThemeCubit(),
+          )
+        ],
         child: BlocBuilder<ThemeCubit, ThemeData>(
           builder: (context, state) {
             return _buildWithTheme(context, state);
@@ -30,7 +33,7 @@ Widget _buildWithTheme(BuildContext context, state) {
     theme: state,
     themeAnimationCurve: Curves.easeInOut,
     themeAnimationDuration: const Duration(seconds: 1),
-    home: HomeScreen(),
+    home: const HomeScreen(),
   );
 }
 
