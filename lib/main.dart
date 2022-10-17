@@ -1,13 +1,14 @@
+import 'package:budget_tracker/logic/category/category_cubit.dart';
 import 'package:budget_tracker/logic/theme/theme_cubit.dart';
 import 'package:budget_tracker/models/category/category_model.dart';
 import 'package:budget_tracker/screens/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
- import 'package:hive_flutter/adapters.dart';
+import 'package:hive_flutter/adapters.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
- await Hive.initFlutter();
+  await Hive.initFlutter();
   Hive.registerAdapter(CategoryModelAdapter());
   Hive.registerAdapter(CategoryTypeAdapter());
   runApp(const MyApp());
@@ -22,7 +23,10 @@ class MyApp extends StatelessWidget {
         providers: [
           BlocProvider(
             create: (ctx) => ThemeCubit(),
-          )
+          ),
+          BlocProvider(
+            create: (ctx) => CategoryCubit(),
+          ),
         ],
         child: BlocBuilder<ThemeCubit, ThemeData>(
           builder: (context, state) {

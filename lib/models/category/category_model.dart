@@ -28,6 +28,6 @@ class CategoryModel {
     required this.name,
     required this.id,
     required this.categoryType,
-    required this.isDeleted,
+    this.isDeleted = false,
   });
 }

@@ -1,11 +1,8 @@
-import 'dart:ui';
-
 import 'package:budget_tracker/logic/theme/theme_cubit.dart';
 import 'package:budget_tracker/screens/category/category_screen.dart';
 import 'package:budget_tracker/screens/home/widgets/card_info_widget.dart';
 import 'package:budget_tracker/screens/home/widgets/drawer_header.dart';
 import 'package:budget_tracker/screens/home/widgets/transaction_tile.dart';
-import 'package:budget_tracker/themes/dark_theme.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -34,7 +31,6 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    print("Build called");
     final width = MediaQuery.of(context).size.width;
     //final height = MediaQuery.of(context).size.height;
     return Scaffold(
@@ -82,8 +78,8 @@ class _HomeScreenState extends State<HomeScreen>
                 ListTile(
                   onTap: () {
                     _scaffoldkey.currentState!.closeDrawer();
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (ctx) => const CategoryScreen()));
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (ctx) => CategoryScreen()));
                   },
                   tileColor: Colors.white.withOpacity(0.3),
                   title: Text(
@@ -99,8 +95,6 @@ class _HomeScreenState extends State<HomeScreen>
                   tileColor: Colors.white.withOpacity(0.3),
                   onTap: () {
                     _scaffoldkey.currentState!.closeDrawer();
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (ctx) => const CategoryScreen()));
                   },
                   title: Text(
                     "Reports",
@@ -152,15 +146,17 @@ class _HomeScreenState extends State<HomeScreen>
         ),
       ),
       floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
-      floatingActionButton: FloatingActionButton.small(
-        onPressed: () {
-          print("Add Transaction");
-        },
-        backgroundColor: Theme.of(context).primaryColor,
-        tooltip: 'Add transaction',
-        child: const Icon(
-          Icons.add,
-          color: Colors.black,
+      floatingActionButton: SizedBox(
+        width: 70,
+        child: FloatingActionButton(
+          backgroundColor: Theme.of(context).primaryColor,
+          onPressed: () {},
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          child: const Icon(
+            Icons.add,
+            color: Colors.black,
+          ),
         ),
       ),
     );
