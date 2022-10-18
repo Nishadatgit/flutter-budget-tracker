@@ -20,4 +20,15 @@ class CategoryCubit extends Cubit<CategoryState> {
       emit(CategoriesLoadedState(datas));
     }
   }
+
+  void deleteCategory(String id,CategoryModel model) async {
+    try {
+      await categoryDb.hideCategory(id,model);
+      emit(CategoryDeletedState());
+      fetchCategories();
+    } catch (e) {
+      emit(CategoryDeleteErrorState(e.toString()));
+      fetchCategories();
+    }
+  }
 }

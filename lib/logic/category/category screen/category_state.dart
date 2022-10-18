@@ -6,6 +6,16 @@ class LoadingState extends CategoryState {}
 
 class NoCategoriesState extends CategoryState {}
 
+class CategoryDeletedState extends CategoryState {
+  
+}
+
+class CategoryDeleteErrorState extends CategoryState {
+  final String message;
+
+  CategoryDeleteErrorState(this.message);
+}
+
 class CategoriesLoadedState extends CategoryState {
   final List<CategoryModel> categories;
 

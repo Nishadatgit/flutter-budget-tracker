@@ -1,4 +1,5 @@
-import 'package:budget_tracker/logic/category/category_cubit.dart';
+import 'package:budget_tracker/logic/category/category screen/category_cubit.dart';
+import 'package:budget_tracker/logic/category/category%20selector/cubit/category_selector_cubit.dart';
 import 'package:budget_tracker/logic/theme/theme_cubit.dart';
 import 'package:budget_tracker/models/category/category_model.dart';
 import 'package:budget_tracker/screens/home/home_screen.dart';
@@ -26,6 +27,9 @@ class MyApp extends StatelessWidget {
           ),
           BlocProvider(
             create: (ctx) => CategoryCubit(),
+          ),
+           BlocProvider(
+            create: (ctx) => CategorySelectorCubit(),
           ),
         ],
         child: BlocBuilder<ThemeCubit, ThemeData>(

@@ -166,13 +166,14 @@ class _HomeScreenState extends State<HomeScreen>
           builder: (context, bool value, _) {
             return AnimatedContainer(
               duration: const Duration(milliseconds: 200),
-              width: value != true ? 55 : 0,
-              height: value != true ? 55 : 0,
+              width: value != true ? 50 : 0,
+              height: value != true ? 50 : 0,
               child: FloatingActionButton(
                 backgroundColor: Theme.of(context).primaryColor,
                 onPressed: () {},
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20)),
+                  borderRadius: BorderRadius.circular(20),
+                ),
                 child: value != true
                     ? const Icon(
                         Icons.add,
