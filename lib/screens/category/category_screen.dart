@@ -28,11 +28,11 @@ class CategoryScreen extends StatelessWidget {
         },
       ),
       floatingActionButton: SizedBox(
-        width: 70,
+        width: 50,
         child: FloatingActionButton(
           backgroundColor: Theme.of(context).primaryColor,
           onPressed: () {
-            showAddCategoryBottomSheet(context);
+            showAddCategoryPopup(context);
           },
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -45,9 +45,8 @@ class CategoryScreen extends StatelessWidget {
     );
   }
 
-  void showAddCategoryBottomSheet(BuildContext context) async {
+  void showAddCategoryPopup(BuildContext context) async {
     showModalBottomSheet(
-      constraints: BoxConstraints.tight(const Size.fromHeight(300)),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(10),

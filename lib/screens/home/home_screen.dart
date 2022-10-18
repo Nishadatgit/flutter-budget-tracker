@@ -5,6 +5,7 @@ import 'package:budget_tracker/screens/home/widgets/drawer_header.dart';
 import 'package:budget_tracker/screens/home/widgets/transaction_tile.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -17,6 +18,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldkey = GlobalKey();
+  final ValueNotifier<bool> isScrollingForward = ValueNotifier(false);
+  late ScrollController scrollController;
 
   late AnimationController animationController;
 
@@ -26,6 +29,18 @@ class _HomeScreenState extends State<HomeScreen>
     animationController = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 600));
     animation = Tween<double>(begin: 0, end: 1).animate(animationController);
+    scrollController = ScrollController()
+      ..addListener(() {
+        if (scrollController.position.userScrollDirection ==
+            ScrollDirection.reverse) {
+          isScrollingForward.value = true;
+        } else if (scrollController.position.userScrollDirection ==
+            ScrollDirection.forward) {
+          isScrollingForward.value = false;
+          isScrollingForward.notifyListeners();
+        }
+      });
+
     super.initState();
   }
 
@@ -121,7 +136,7 @@ class _HomeScreenState extends State<HomeScreen>
                 amount: 20000,
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
             Text(
               "Recent Transactions",
               style:
@@ -130,6 +145,7 @@ class _HomeScreenState extends State<HomeScreen>
             const SizedBox(height: 20),
             Expanded(
               child: ListView.builder(
+                controller: scrollController,
                 itemBuilder: (ctx, index) => const Padding(
                   padding: EdgeInsets.symmetric(vertical: 10),
                   child: TransactionTile(
@@ -145,20 +161,27 @@ class _HomeScreenState extends State<HomeScreen>
           ],
         ),
       ),
-      floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
-      floatingActionButton: SizedBox(
-        width: 70,
-        child: FloatingActionButton(
-          backgroundColor: Theme.of(context).primaryColor,
-          onPressed: () {},
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          child: const Icon(
-            Icons.add,
-            color: Colors.black,
-          ),
-        ),
-      ),
+      floatingActionButton: ValueListenableBuilder<bool>(
+          valueListenable: isScrollingForward,
+          builder: (context, bool value, _) {
+            return AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              width: value != true ? 55 : 0,
+              height: value != true ? 55 : 0,
+              child: FloatingActionButton(
+                backgroundColor: Theme.of(context).primaryColor,
+                onPressed: () {},
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20)),
+                child: value != true
+                    ? const Icon(
+                        Icons.add,
+                        color: Colors.black,
+                      )
+                    : null,
+              ),
+            );
+          }),
     );
   }
 }
