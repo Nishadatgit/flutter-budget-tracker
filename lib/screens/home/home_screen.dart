@@ -1,3 +1,4 @@
+import 'package:budget_tracker/db/category_db/category_db.dart';
 import 'package:budget_tracker/logic/theme/theme_cubit.dart';
 import 'package:budget_tracker/screens/category/category_screen.dart';
 import 'package:budget_tracker/screens/home/widgets/card_info_widget.dart';
@@ -170,7 +171,9 @@ class _HomeScreenState extends State<HomeScreen>
               height: value != true ? 50 : 0,
               child: FloatingActionButton(
                 backgroundColor: Theme.of(context).primaryColor,
-                onPressed: () {},
+                onPressed: () {
+                  //CategoryDb().clearBox();
+                },
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),

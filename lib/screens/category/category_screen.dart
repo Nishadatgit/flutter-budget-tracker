@@ -6,8 +6,11 @@ import 'package:budget_tracker/logic/category/category%20selector/cubit/category
 import 'package:budget_tracker/models/category/category_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:delayed_display/delayed_display.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 import 'widgets/category_type_radio_button_widget.dart';
+import 'widgets/no_data_widget.dart';
 
 class CategoryScreen extends StatelessWidget {
   CategoryScreen({super.key});
@@ -30,11 +33,30 @@ class CategoryScreen extends StatelessWidget {
         body: BlocConsumer<CategoryCubit, CategoryState>(
           listener: (context, state) {
             if (state is CategoryDeletedState) {
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(const SnackBar(content: Text("Item deleted")));
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10),
+                    ),
+                  ),
+                  backgroundColor: Colors.red,
+                  duration: Duration(seconds: 1),
+                  content: Text("Item deleted"),
+                ),
+              );
             } else if (state is CategoryDeleteErrorState) {
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(SnackBar(content: Text(state.message)));
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10),
+                    ),
+                  ),
+                  duration: const Duration(seconds: 1),
+                  content: Text(state.message),
+                ),
+              );
             }
           },
           builder: (context, state) {
@@ -42,7 +64,7 @@ class CategoryScreen extends StatelessWidget {
               return const Center(child: CircularProgressIndicator());
             } else if (state is NoCategoriesState) {
               return const Center(
-                child: Text("No data"),
+                child: NoDataWidget(),
               );
             } else if (state is CategoriesLoadedState) {
               return Padding(
@@ -54,47 +76,70 @@ class CategoryScreen extends StatelessWidget {
                       final category = state.categories[index];
                       return Padding(
                         padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                              color: Theme.of(context)
-                                  .primaryColor
-                                  .withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(10)),
-                          height: 50,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(category.name.toUpperCase()),
-                              const Spacer(),
-                              IconButton(
-                                onPressed: () {
-                                  categoryNameEditController.text =
-                                      category.name;
-                                  BlocProvider.of<CategorySelectorCubit>(
-                                          context)
-                                      .changeValue(category.categoryType);
-                                  showEditCategoryBottomSheet(
-                                      context, category.id);
-                                },
-                                icon:
-                                    const Icon(Icons.edit, color: Colors.blue),
+                        child: DelayedDisplay(
+                          slidingBeginOffset: const Offset(0.0, 0.5),
+                          fadingDuration: const Duration(milliseconds: 500),
+                          child: Slidable(
+                            closeOnScroll: true,
+                            endActionPane: ActionPane(
+                                motion: const DrawerMotion(),
+                                openThreshold: 0.5,
+                                children: [
+                                  SlidableAction(
+                                      onPressed: (ctx) {
+                                        categoryNameEditController.text =
+                                            category.name;
+                                        BlocProvider.of<CategorySelectorCubit>(
+                                                context)
+                                            .changeValue(category.categoryType);
+                                        showEditCategoryBottomSheet(
+                                            context, category.id);
+                                      },
+                                      backgroundColor: Colors.transparent,
+                                      foregroundColor: Colors.blue,
+                                      icon: Icons.edit),
+                                  SlidableAction(
+                                    onPressed: (context) {
+                                      final newCategory = CategoryModel(
+                                          categoryType: category.categoryType,
+                                          name: category.name,
+                                          isDeleted: true,
+                                          id: category.id);
+                                      BlocProvider.of<CategoryCubit>(context)
+                                          .deleteCategory(
+                                              category.id, newCategory);
+                                    },
+                                    icon: Icons.delete,
+                                    backgroundColor: Colors.transparent,
+                                    foregroundColor: Colors.red,
+                                  )
+                                ]),
+                            child: Container(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20),
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: Theme.of(context)
+                                    .primaryColor
+                                    .withOpacity(0.2),
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(
+                                    width: 2,
+                                    style: BorderStyle.solid,
+                                    color: category.categoryType ==
+                                            CategoryType.income
+                                        ? Colors.green[300]!.withOpacity(0.8)
+                                        : Colors.red[300]!.withOpacity(0.8)),
                               ),
-                              IconButton(
-                                onPressed: () {
-                                  final newCategory = CategoryModel(
-                                      categoryType: category.categoryType,
-                                      name: category.name,
-                                      isDeleted: true,
-                                      id: category.id);
-                                  BlocProvider.of<CategoryCubit>(context)
-                                      .deleteCategory(category.id, newCategory);
-                                },
-                                icon:
-                                    const Icon(Icons.delete, color: Colors.red),
-                              )
-                            ],
+                              height: 50,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(category.name.toUpperCase()),
+                                  const Spacer(),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
                       );
@@ -114,7 +159,7 @@ class CategoryScreen extends StatelessWidget {
           height: 50,
           child: FloatingActionButton(
               backgroundColor: Theme.of(context).primaryColor,
-              onPressed: () {
+              onPressed: () async {
                 showAddCategoryBottomSheet(context);
               },
               shape: RoundedRectangleBorder(
@@ -156,6 +201,7 @@ class CategoryScreen extends StatelessWidget {
                   SizedBox(
                     width: 200,
                     child: TextField(
+                      autofocus: true,
                       controller: categoryNameController,
                       textCapitalization: TextCapitalization.characters,
                       maxLines: 1,
@@ -197,7 +243,7 @@ class CategoryScreen extends StatelessWidget {
                           BlocProvider.of<CategorySelectorCubit>(context).state;
                       if (categoryNameController.text.isNotEmpty) {
                         final CategoryModel categoryModel = CategoryModel(
-                            name: categoryNameController.text,
+                            name: categoryNameController.text.toLowerCase(),
                             id: DateTime.now()
                                 .millisecondsSinceEpoch
                                 .toString(),
@@ -290,7 +336,7 @@ class CategoryScreen extends StatelessWidget {
                           BlocProvider.of<CategorySelectorCubit>(context).state;
                       if (categoryNameEditController.text.isNotEmpty) {
                         final CategoryModel categoryModel = CategoryModel(
-                            name: categoryNameEditController.text,
+                            name: categoryNameEditController.text.toLowerCase(),
                             id: id,
                             categoryType: selectedCategoryType);
                         await CategoryDb().insertCategory(categoryModel);
@@ -302,7 +348,7 @@ class CategoryScreen extends StatelessWidget {
                         return;
                       }
                     },
-                    child: const Text("Add"),
+                    child: const Text("Edit"),
                   )
                 ],
               )
