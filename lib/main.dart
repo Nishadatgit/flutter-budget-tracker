@@ -44,8 +44,7 @@ Widget _buildWithTheme(BuildContext context, state) {
   return MaterialApp(
     title: 'Budget Tracker',
     theme: state,
-    themeAnimationCurve: Curves.easeIn,
-    themeAnimationDuration: const Duration(milliseconds: 300),
+   
     home: const HomeScreen(),
   
   );

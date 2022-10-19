@@ -13,7 +13,7 @@ import 'widgets/category_type_radio_button_widget.dart';
 import 'widgets/no_data_widget.dart';
 
 class CategoryScreen extends StatelessWidget {
-  CategoryScreen({super.key});
+  CategoryScreen({ super.key});
   final TextEditingController categoryNameController = TextEditingController();
   final TextEditingController categoryNameEditController =
       TextEditingController();

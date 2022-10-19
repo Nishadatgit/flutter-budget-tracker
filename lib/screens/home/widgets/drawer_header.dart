@@ -28,9 +28,15 @@ class DrawerHeaderWidget extends StatelessWidget {
           bottom: 30,
           child: Row(
             children: [
-              const CircleAvatar(
-                radius: 30,
-                backgroundImage: AssetImage("assets/images/mypic.jpg"),
+              Container(
+                height: 54,
+                width: 54,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                      image: AssetImage("assets/images/mypic.jpg"),
+                      fit: BoxFit.cover),
+                ),
               ),
               const SizedBox(width: 20),
               Text(
