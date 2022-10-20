@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class TransactionTile extends StatelessWidget {
   const TransactionTile({
@@ -7,14 +8,18 @@ class TransactionTile extends StatelessWidget {
     required this.category,
     required this.title,
     required this.amount,
+    required this.date,
   });
   final Color tileColor;
   final String category;
   final String title;
   final double amount;
+  final DateTime date;
 
   @override
   Widget build(BuildContext context) {
+    final formattedDate = DateFormat('dd/MM').format(date);
+    final formattedDay = DateFormat('EEEE').format(date).substring(0, 4);
     return Container(
       decoration: BoxDecoration(
           color: Colors.grey[600]!.withOpacity(.3),
@@ -28,7 +33,7 @@ class TransactionTile extends StatelessWidget {
         minLeadingWidth: 60,
         minVerticalPadding: 0,
         leading: Text(
-          "12/02\nWED",
+          "$formattedDate\n$formattedDay",
           style: Theme.of(context)
               .textTheme
               .bodySmall!

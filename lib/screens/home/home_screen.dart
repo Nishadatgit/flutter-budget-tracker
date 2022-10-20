@@ -1,10 +1,13 @@
 import 'package:budget_tracker/db/category_db/category_db.dart';
+import 'package:budget_tracker/logic/home/cubit/recent_transactions_cubit.dart';
 import 'package:budget_tracker/logic/theme/theme_cubit.dart';
+import 'package:budget_tracker/models/category/category_model.dart';
+import 'package:budget_tracker/screens/add_transaction/add_transaction_screen.dart';
 import 'package:budget_tracker/screens/category/category_screen.dart';
 import 'package:budget_tracker/screens/home/widgets/card_info_widget.dart';
 import 'package:budget_tracker/screens/home/widgets/drawer_header.dart';
 import 'package:budget_tracker/screens/home/widgets/transaction_tile.dart';
-
+import 'package:delayed_display/delayed_display.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,9 +41,10 @@ class _HomeScreenState extends State<HomeScreen>
         } else if (scrollController.position.userScrollDirection ==
             ScrollDirection.forward) {
           isScrollingForward.value = false;
-          isScrollingForward.notifyListeners();
         }
       });
+    BlocProvider.of<RecentTransactionsCubit>(context)
+        .fetchAllRecentTransactions();
 
     super.initState();
   }
@@ -97,7 +101,7 @@ class _HomeScreenState extends State<HomeScreen>
                     Navigator.of(context).push(
                         MaterialPageRoute(builder: (ctx) => CategoryScreen()));
                   },
-                  tileColor: Colors.white.withOpacity(0.3),
+                  tileColor: Theme.of(context).primaryColor.withOpacity(0.3),
                   title: Text(
                     "Manage Categories",
                     style: Theme.of(context)
@@ -108,7 +112,7 @@ class _HomeScreenState extends State<HomeScreen>
                 ),
                 const SizedBox(height: 5),
                 ListTile(
-                  tileColor: Colors.white.withOpacity(0.3),
+                  tileColor: Theme.of(context).primaryColor.withOpacity(0.3),
                   onTap: () {
                     _scaffoldkey.currentState!.closeDrawer();
                   },
@@ -143,20 +147,56 @@ class _HomeScreenState extends State<HomeScreen>
               style:
                   Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 22),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
             Expanded(
-              child: ListView.builder(
-                controller: scrollController,
-                itemBuilder: (ctx, index) => const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10),
-                  child: TransactionTile(
-                    title: "Rent paid",
-                    amount: 2000,
-                    category: 'Rent',
-                    tileColor: Colors.red,
-                  ),
-                ),
-                itemCount: 10,
+              child: BlocConsumer<RecentTransactionsCubit,
+                  RecentTransactionsState>(
+                listener: (context, state) {},
+                builder: (context, state) {
+                  if (state is RecentTransactionsLoadedState) {
+                    return ClipRRect(
+                      borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          topRight: Radius.circular(10)),
+                      child: DelayedDisplay(
+                        child: ListView.builder(
+                          controller: scrollController,
+                          itemBuilder: (ctx, index) {
+                            final transaction =
+                                state.transactions.reversed.toList()[index];
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              child: TransactionTile(
+                                title: transaction.purpose,
+                                amount: transaction.amount,
+                                category: transaction.category.name,
+                                tileColor: transaction.category.categoryType ==
+                                        CategoryType.expense
+                                    ? Colors.red
+                                    : Colors.green,
+                                date: transaction.date,
+                              ),
+                            );
+                          },
+                          itemCount: state.transactions.length,
+                        ),
+                      ),
+                    );
+                  } else if (state is RecentTransactionsLoadingState) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (state is RecentTransactionsEmptyState) {
+                    return Center(
+                      child: Text(
+                        "No recent transactions",
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                    );
+                  } else {
+                    return const Center(child: Text("Something went wrong"));
+                  }
+                },
               ),
             )
           ],
@@ -172,7 +212,9 @@ class _HomeScreenState extends State<HomeScreen>
               child: FloatingActionButton(
                 backgroundColor: Theme.of(context).primaryColor,
                 onPressed: () {
-                  //CategoryDb().clearBox();
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (ctx) => AddTransactionScreen()),
+                  );
                 },
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),

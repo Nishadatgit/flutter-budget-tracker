@@ -10,9 +10,8 @@ final darkTheme = ThemeData(
       bodyMedium: TextStyle(
           color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
       bodySmall: TextStyle(color: Colors.white, fontWeight: FontWeight.w400)),
-  appBarTheme: const AppBarTheme(
-    backgroundColor: Color(0xff302d43),
-  ),
+  appBarTheme: const AppBarTheme(backgroundColor: Color(0xff302d43)),
+  primarySwatch: Colors.purple,
   iconTheme: const IconThemeData(color: Colors.white),
   primaryColor: Colors.white,
 );

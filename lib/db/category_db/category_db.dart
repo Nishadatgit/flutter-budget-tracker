@@ -1,5 +1,6 @@
 import 'package:budget_tracker/core/constants.dart';
 import 'package:budget_tracker/models/category/category_model.dart';
+import 'package:budget_tracker/models/transaction/transaction_model.dart';
 import 'package:hive/hive.dart';
 
 class CategoryDb {
@@ -24,6 +25,8 @@ class CategoryDb {
 
   Future<void> clearBox() async {
     final box = await Hive.openBox<CategoryModel>(CATEGORY_DB_NAME);
+    final box2 = await Hive.openBox<TransactionModel>(TRANSACTION_DB_NAME);
+    box2.clear();
     box.clear();
   }
 
