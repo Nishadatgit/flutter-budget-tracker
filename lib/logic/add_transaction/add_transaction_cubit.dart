@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'package:bloc/bloc.dart';
 import 'package:budget_tracker/db/transaction_db/transaction_db.dart';
 import 'package:budget_tracker/models/transaction/transaction_model.dart';

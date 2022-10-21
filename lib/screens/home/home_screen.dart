@@ -7,6 +7,7 @@ import 'package:budget_tracker/screens/category/category_screen.dart';
 import 'package:budget_tracker/screens/home/widgets/card_info_widget.dart';
 import 'package:budget_tracker/screens/home/widgets/drawer_header.dart';
 import 'package:budget_tracker/screens/home/widgets/transaction_tile.dart';
+import 'package:budget_tracker/screens/reports_screen/reports_screen.dart';
 import 'package:delayed_display/delayed_display.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -105,52 +106,66 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 bottomRight: Radius.circular(10),
               ),
             ),
-            child: Column(
-              children: [
-                const DrawerHeaderWidget(),
-                OpenContainer(
-                  useRootNavigator: true,
-                  openShape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  openColor: const Color(0xff302d43),
-                  closedColor: Colors.transparent,
-                  openBuilder: (context, action) {
-                    return CategoryScreen();
-                  },
-                  closedBuilder: (context, action) {
-                    return Container(
-                      color: Theme.of(context).primaryColor.withOpacity(0.3),
-                      height: 50,
-                      alignment: Alignment.center,
-                      child: Hero(
-                        tag: 'name',
-                        child: Text(
-                          "Categories",
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium!
-                              .copyWith(fontSize: 16),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 5),
+              child: Column(
+                children: [
+                  const DrawerHeaderWidget(),
+                  OpenContainer(
+                    useRootNavigator: true,
+                    openColor: const Color(0xff302d43),
+                    closedColor: Colors.transparent,
+                    openBuilder: (context, action) {
+                      return CategoryScreen();
+                    },
+                    closedBuilder: (context, action) {
+                      return Container(
+                        color: Theme.of(context).primaryColor.withOpacity(0.3),
+                        height: 50,
+                        alignment: Alignment.center,
+                        child: Hero(
+                          tag: 'name',
+                          child: Text(
+                            "Categories",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(fontSize: 16),
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                ),
-                const SizedBox(height: 5),
-                Container(
-                  height: 50,
-                  decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor.withOpacity(0.3),
-                      borderRadius: BorderRadius.circular(5)),
-                  alignment: Alignment.center,
-                  child: Text(
-                    "Reports",
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium!
-                        .copyWith(fontSize: 16),
+                      );
+                    },
                   ),
-                )
-              ],
+                  const SizedBox(height: 5),
+                  OpenContainer(
+                    closedColor: Colors.transparent,
+                    useRootNavigator: true,
+                    closedBuilder: (context, action) {
+                      return Container(
+                        height: 50,
+                        decoration: BoxDecoration(
+                            color:
+                                Theme.of(context).primaryColor.withOpacity(0.3),
+                            borderRadius: BorderRadius.circular(5)),
+                        alignment: Alignment.center,
+                        child: Hero(
+                          tag: "name2",
+                          child: Text(
+                            "Reports",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(fontSize: 16),
+                          ),
+                        ),
+                      );
+                    },
+                    openBuilder: (context, action) {
+                      return const ReportsScreen();
+                    },
+                  ),
+                ],
+              ),
             ),
           );
         },

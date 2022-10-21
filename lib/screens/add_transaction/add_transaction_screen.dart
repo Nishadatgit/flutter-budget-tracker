@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:budget_tracker/logic/add_transaction/add_transaction_cubit.dart';
 import 'package:budget_tracker/logic/category/category%20screen/category_cubit.dart';
 import 'package:budget_tracker/logic/home/cubit/recent_transactions_cubit.dart';
@@ -12,6 +10,8 @@ import 'package:intl/intl.dart';
 
 class AddTransactionScreen extends StatelessWidget {
   AddTransactionScreen({super.key});
+
+  //
   static DateTime? selectedDate;
   final TextEditingController purposeController = TextEditingController();
   final TextEditingController amountController = TextEditingController();
@@ -119,12 +119,6 @@ class AddTransactionScreen extends StatelessWidget {
                                               .toList();
                                         },
                                         value: selectedCategoryModel.value,
-                                        style: TextStyle(
-                                            color:
-                                                Theme.of(context).brightness ==
-                                                        Brightness.dark
-                                                    ? Colors.white
-                                                    : Colors.black),
                                         hint: const Text("Select a category"),
                                         items: items
                                             .map(
