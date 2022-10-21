@@ -1,4 +1,5 @@
-import 'package:budget_tracker/db/transaction_db/transaction_db.dart';
+import 'dart:ui';
+
 import 'package:budget_tracker/logic/add_transaction/add_transaction_cubit.dart';
 import 'package:budget_tracker/logic/category/category%20screen/category_cubit.dart';
 import 'package:budget_tracker/logic/home/cubit/recent_transactions_cubit.dart';
@@ -11,11 +12,12 @@ import 'package:intl/intl.dart';
 
 class AddTransactionScreen extends StatelessWidget {
   AddTransactionScreen({super.key});
-  DateTime? selectedDate;
+  static DateTime? selectedDate;
   final TextEditingController purposeController = TextEditingController();
   final TextEditingController amountController = TextEditingController();
   final TextEditingController dateController = TextEditingController();
-  ValueNotifier<CategoryModel?> selectedCategoryModel = ValueNotifier(null);
+  final ValueNotifier<CategoryModel?> selectedCategoryModel =
+      ValueNotifier(null);
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +28,14 @@ class AddTransactionScreen extends StatelessWidget {
             "Add Transaction",
             style: Theme.of(context).textTheme.bodyLarge,
           ),
+          leading: IconButton(
+              onPressed: () {
+                FocusScope.of(context).unfocus();
+                Navigator.of(context).pop();
+              },
+              icon: const Hero(
+                  tag: 'icon',
+                  child: Icon(Icons.arrow_back_ios_new, size: 20))),
         ),
         body: BlocConsumer<AddTransactionCubit, AddTransactionState>(
           builder: (ctx, state) {
@@ -40,6 +50,7 @@ class AddTransactionScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   DelayedDisplay(
+                    fadingDuration: const Duration(seconds: 1),
                     child: TextField(
                       controller: purposeController,
                       decoration: const InputDecoration(hintText: 'Purpose'),
@@ -47,13 +58,16 @@ class AddTransactionScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   DelayedDisplay(
+                    fadingDuration: const Duration(seconds: 1),
                     child: TextField(
+                      keyboardType: TextInputType.number,
                       controller: amountController,
                       decoration: const InputDecoration(hintText: 'Amount'),
                     ),
                   ),
                   const SizedBox(height: 20),
                   DelayedDisplay(
+                    fadingDuration: const Duration(seconds: 1),
                     child: TextField(
                       controller: dateController,
                       readOnly: true,
@@ -76,6 +90,7 @@ class AddTransactionScreen extends StatelessWidget {
                                 valueListenable: selectedCategoryModel,
                                 builder: (context, value, child) {
                                   return DelayedDisplay(
+                                    fadingDuration: const Duration(seconds: 1),
                                     child: DropdownButton(
                                         underline: const SizedBox(),
                                         dropdownColor:
@@ -84,7 +99,32 @@ class AddTransactionScreen extends StatelessWidget {
                                                 ? Colors.purple
                                                 : Colors.black,
                                         borderRadius: BorderRadius.circular(10),
+                                        selectedItemBuilder: (ctx) {
+                                          return items
+                                              .map(
+                                                (e) => DropdownMenuItem(
+                                                  child: Text(
+                                                    e.name.toUpperCase(),
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyMedium!
+                                                        .copyWith(
+                                                            fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .w400),
+                                                  ),
+                                                ),
+                                              )
+                                              .toList();
+                                        },
                                         value: selectedCategoryModel.value,
+                                        style: TextStyle(
+                                            color:
+                                                Theme.of(context).brightness ==
+                                                        Brightness.dark
+                                                    ? Colors.white
+                                                    : Colors.black),
                                         hint: const Text("Select a category"),
                                         items: items
                                             .map(
@@ -96,7 +136,9 @@ class AddTransactionScreen extends StatelessWidget {
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .bodyMedium!
-                                                      .copyWith(fontSize: 16),
+                                                      .copyWith(
+                                                          fontSize: 16,
+                                                          color: Colors.white),
                                                 ),
                                               ),
                                             )
@@ -127,44 +169,56 @@ class AddTransactionScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      ElevatedButton(
-                        onPressed: () async {
-                          final isvalidated = validateForm(context);
-                          if (isvalidated == true) {
-                            final navigator = Navigator.of(context);
-                            final amount =
-                                double.parse(amountController.text.trim());
-                            final purpose = purposeController.text
-                                .toLowerCase()
-                                .trimRight();
-                            final categoryModel = selectedCategoryModel.value!;
-                            final date = selectedDate!;
-                            final model = TransactionModel(
-                              id: DateTime.now()
-                                  .millisecondsSinceEpoch
-                                  .toString(),
-                              purpose: purpose,
-                              amount: amount,
-                              category: categoryModel,
-                              date: date,
-                            );
-                            await BlocProvider.of<AddTransactionCubit>(context)
-                                .addTransaction(model);
+                      DelayedDisplay(
+                        fadingDuration: const Duration(seconds: 1),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Theme.of(context).primaryColor),
+                          onPressed: () async {
+                            final isvalidated = validateForm(context);
+                            if (isvalidated == true) {
+                              final provider =
+                                  BlocProvider.of<RecentTransactionsCubit>(
+                                      context);
+                              final navigator = Navigator.of(context);
+                              final focus = FocusScope.of(context);
+                              final amount =
+                                  double.parse(amountController.text.trim());
+                              final purpose = purposeController.text
+                                  .toLowerCase()
+                                  .trimRight();
+                              final categoryModel =
+                                  selectedCategoryModel.value!;
+                              final date = selectedDate!;
+                              final model = TransactionModel(
+                                id: DateTime.now()
+                                    .millisecondsSinceEpoch
+                                    .toString(),
+                                purpose: purpose,
+                                amount: amount,
+                                category: categoryModel,
+                                date: date,
+                              );
+                              await BlocProvider.of<AddTransactionCubit>(
+                                      context)
+                                  .addTransaction(model);
+                              provider.fetchAllRecentTransactions();
+                              focus.unfocus();
+                              navigator.pop();
 
-                            // ignore: use_build_context_synchronously
-                            BlocProvider.of<RecentTransactionsCubit>(context)
-                                .fetchAllRecentTransactions();
-                            navigator.pop();
-                            //add to db
-                          }
-                        },
-                        child: Text(
-                          "Add",
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall!
-                              .copyWith(
-                                  fontWeight: FontWeight.bold, fontSize: 14),
+                              //add to db
+                            }
+                          },
+                          child: Text(
+                            "Add",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall!
+                                .copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                    color: Colors.black),
+                          ),
                         ),
                       )
                     ],
@@ -177,6 +231,12 @@ class AddTransactionScreen extends StatelessWidget {
             if (state is AddedTransaction) {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(10),
+                      topRight: Radius.circular(10),
+                    ),
+                  ),
                   content: Text("Added transaction",
                       style: TextStyle(
                           color: Colors.white, fontWeight: FontWeight.bold)),

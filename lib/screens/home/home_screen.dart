@@ -1,4 +1,4 @@
-import 'package:budget_tracker/db/category_db/category_db.dart';
+import 'package:animations/animations.dart';
 import 'package:budget_tracker/logic/home/cubit/recent_transactions_cubit.dart';
 import 'package:budget_tracker/logic/theme/theme_cubit.dart';
 import 'package:budget_tracker/models/category/category_model.dart';
@@ -19,30 +19,43 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen>
-    with SingleTickerProviderStateMixin {
+class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldkey = GlobalKey();
   final ValueNotifier<bool> isScrollingForward = ValueNotifier(false);
   late ScrollController scrollController;
 
   late AnimationController animationController;
-
+  late AnimationController floatingAnimationController;
   late Animation<double> animation;
+  late Animation<Offset> floatingAnimation;
   @override
   void initState() {
     animationController = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 600));
     animation = Tween<double>(begin: 0, end: 1).animate(animationController);
+    floatingAnimationController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 300));
+    final curvedFloatingAnimation = CurvedAnimation(
+        parent: floatingAnimationController,
+        curve: Curves.easeIn,
+        reverseCurve: Curves.easeInCirc);
+    floatingAnimation =
+        Tween<Offset>(begin: const Offset(0, 2), end: const Offset(0, 0))
+            .animate(curvedFloatingAnimation);
+
+    //Scroll controller
     scrollController = ScrollController()
       ..addListener(() {
         if (scrollController.position.userScrollDirection ==
             ScrollDirection.reverse) {
-          isScrollingForward.value = true;
+          floatingAnimationController.reverse();
         } else if (scrollController.position.userScrollDirection ==
             ScrollDirection.forward) {
-          isScrollingForward.value = false;
+          floatingAnimationController.forward();
         }
       });
+    floatingAnimationController.forward();
+    //
     BlocProvider.of<RecentTransactionsCubit>(context)
         .fetchAllRecentTransactions();
 
@@ -95,28 +108,41 @@ class _HomeScreenState extends State<HomeScreen>
             child: Column(
               children: [
                 const DrawerHeaderWidget(),
-                ListTile(
-                  onTap: () {
-                    _scaffoldkey.currentState!.closeDrawer();
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (ctx) => CategoryScreen()));
+                OpenContainer(
+                  useRootNavigator: true,
+                  openShape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  openColor: const Color(0xff302d43),
+                  closedColor: Colors.transparent,
+                  openBuilder: (context, action) {
+                    return CategoryScreen();
                   },
-                  tileColor: Theme.of(context).primaryColor.withOpacity(0.3),
-                  title: Text(
-                    "Manage Categories",
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium!
-                        .copyWith(fontSize: 16),
-                  ),
+                  closedBuilder: (context, action) {
+                    return Container(
+                      color: Theme.of(context).primaryColor.withOpacity(0.3),
+                      height: 50,
+                      alignment: Alignment.center,
+                      child: Hero(
+                        tag: 'name',
+                        child: Text(
+                          "Categories",
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium!
+                              .copyWith(fontSize: 16),
+                        ),
+                      ),
+                    );
+                  },
                 ),
                 const SizedBox(height: 5),
-                ListTile(
-                  tileColor: Theme.of(context).primaryColor.withOpacity(0.3),
-                  onTap: () {
-                    _scaffoldkey.currentState!.closeDrawer();
-                  },
-                  title: Text(
+                Container(
+                  height: 50,
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor.withOpacity(0.3),
+                      borderRadius: BorderRadius.circular(5)),
+                  alignment: Alignment.center,
+                  child: Text(
                     "Reports",
                     style: Theme.of(context)
                         .textTheme
@@ -202,32 +228,34 @@ class _HomeScreenState extends State<HomeScreen>
           ],
         ),
       ),
-      floatingActionButton: ValueListenableBuilder<bool>(
-          valueListenable: isScrollingForward,
-          builder: (context, bool value, _) {
+      floatingActionButton: SlideTransition(
+        position: floatingAnimation,
+        child: OpenContainer(
+          closedColor: Theme.of(context).primaryColor,
+          closedShape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(20.0)),
+          ),
+          middleColor: const Color(0xff302d43),
+          transitionType: ContainerTransitionType.fade,
+          transitionDuration: const Duration(milliseconds: 500),
+          closedBuilder: (context, action) {
             return AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              width: value != true ? 50 : 0,
-              height: value != true ? 50 : 0,
-              child: FloatingActionButton(
-                backgroundColor: Theme.of(context).primaryColor,
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (ctx) => AddTransactionScreen()),
-                  );
-                },
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: value != true
-                    ? const Icon(
-                        Icons.add,
-                        color: Colors.black,
-                      )
-                    : null,
-              ),
-            );
-          }),
+                duration: const Duration(milliseconds: 200),
+                width: 50,
+                height: 50,
+                child: const Hero(
+                  tag: 'icon',
+                  child: Icon(
+                    Icons.add,
+                    color: Colors.black,
+                  ),
+                ));
+          },
+          openBuilder: (context, action) {
+            return AddTransactionScreen();
+          },
+        ),
+      ),
     );
   }
 }

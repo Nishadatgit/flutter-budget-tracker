@@ -23,9 +23,18 @@ class CategoryScreen extends StatelessWidget {
         appBar: AppBar(
           scrolledUnderElevation: 1,
           elevation: 0,
-          title: Text(
-            "Category",
-            style: Theme.of(context).textTheme.bodyLarge,
+          title: Hero(
+            tag: 'name',
+            child: Text(
+              "Categories",
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+          ),
+          leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            icon: const Icon(Icons.arrow_back_ios_new, size: 20),
           ),
         ),
         body: Padding(

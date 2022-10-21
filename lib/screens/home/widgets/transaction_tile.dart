@@ -1,6 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+extension StringCasingExtension on String {
+  String toCapitalized() =>
+      length > 0 ? '${this[0].toUpperCase()}${substring(1).toLowerCase()}' : '';
+  String toTitleCase() => replaceAll(RegExp(' +'), ' ')
+      .split(' ')
+      .map((str) => str.toCapitalized())
+      .join(' ');
+}
+
 class TransactionTile extends StatelessWidget {
   const TransactionTile({
     super.key,
@@ -19,7 +28,8 @@ class TransactionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final formattedDate = DateFormat('dd/MM').format(date);
-    final formattedDay = DateFormat('EEEE').format(date).substring(0, 4);
+    final formattedDay =
+        DateFormat('EEEE').format(date).substring(0, 3).toUpperCase();
     return Container(
       decoration: BoxDecoration(
           color: Colors.grey[600]!.withOpacity(.3),
@@ -40,7 +50,7 @@ class TransactionTile extends StatelessWidget {
               .copyWith(fontWeight: FontWeight.bold),
         ),
         title: Text(
-          title,
+          title.toTitleCase(),
           style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 19),
         ),
         subtitle: Text(
@@ -53,7 +63,7 @@ class TransactionTile extends StatelessWidget {
         trailing: Padding(
           padding: const EdgeInsets.only(right: 10),
           child: Text(
-            "\$$amount",
+            "\$ $amount",
             style: Theme.of(context)
                 .textTheme
                 .bodyLarge!
