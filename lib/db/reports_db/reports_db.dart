@@ -48,7 +48,7 @@ class ReportsDb {
     return data;
   }
 
-  Future<Map<String, dynamic>> getTotalIncomeForTheSelectedMonth() async {
+  Future<Map<String, dynamic>> getThisMonthData() async {
     double totalncomeOfTheMonth = 0;
     double totalExpenseOfTheMoth = 0;
     List<TransactionModel> incomesOfThisMonth = [];

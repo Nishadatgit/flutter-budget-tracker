@@ -1,8 +1,10 @@
 import 'package:animations/animations.dart';
 import 'package:budget_tracker/db/reports_db/reports_db.dart';
+import 'package:budget_tracker/logic/home/this_month/this_month_cubit.dart';
 import 'package:budget_tracker/logic/theme/theme_cubit.dart';
 import 'package:budget_tracker/models/category/category_model.dart';
 import 'package:budget_tracker/screens/add_transaction/add_transaction_screen.dart';
+import 'package:budget_tracker/screens/home/widgets/monthly_reports/this_month_reports.dart';
 import 'package:budget_tracker/screens/manage_categories/category_screen.dart';
 import 'package:budget_tracker/screens/home/widgets/card_info_widget.dart';
 import 'package:budget_tracker/screens/home/widgets/drawer_header.dart';
@@ -167,12 +169,31 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       return const ReportsScreen();
                     },
                   ),
-                  ListTile(
-                    title: const Text("weekly reports"),
-                    onTap: () {
-                      ReportsDb().getTotalIncomeForTheSelectedMonth();
+                  const SizedBox(height: 5),
+                  OpenContainer(
+                    closedColor: Colors.transparent,
+                    useRootNavigator: true,
+                    closedBuilder: (context, action) {
+                      return Container(
+                        height: 50,
+                        decoration: BoxDecoration(
+                            color:
+                                Theme.of(context).primaryColor.withOpacity(0.3),
+                            borderRadius: BorderRadius.circular(5)),
+                        alignment: Alignment.center,
+                        child: Text(
+                          "This Month",
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium!
+                              .copyWith(fontSize: 16),
+                        ),
+                      );
                     },
-                  )
+                    openBuilder: (context, action) {
+                      return BlocProvider(create: (context) => ThisMonthCubit(), child: const ThisMonthReportsScreen());
+                    },
+                  ),
                 ],
               ),
             ),
