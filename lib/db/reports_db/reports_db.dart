@@ -4,17 +4,13 @@ import 'package:budget_tracker/models/transaction/transaction_model.dart';
 import 'package:hive_flutter/adapters.dart';
 
 class ReportsDb {
-  
-
   Future<Map<String, List<TransactionModel>>>
       getTransactionsOfSpecificCategory() async {
     final transactionBox =
         await Hive.openBox<TransactionModel>(TRANSACTION_DB_NAME);
     final categoryBox = await Hive.openBox<CategoryModel>(CATEGORY_DB_NAME);
-    final List<String> categories = categoryBox.values
-        .where((element) => element.isDeleted == false)
-        .map((e) => e.name)
-        .toList();
+    final List<String> categories =
+        categoryBox.values.map((e) => e.name).toList();
     // ignore: prefer_for_elements_to_map_fromiterable
     Map<String, List<TransactionModel>> data = Map.fromIterable(
       categories,

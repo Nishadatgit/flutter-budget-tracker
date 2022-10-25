@@ -8,6 +8,7 @@ import 'package:budget_tracker/screens/home/widgets/card_info_widget.dart';
 import 'package:budget_tracker/screens/home/widgets/drawer_header.dart';
 import 'package:budget_tracker/screens/home/widgets/transaction_tile.dart';
 import 'package:budget_tracker/screens/reports_screen/reports_screen.dart';
+import 'package:budget_tracker/screens/view_all_transactions_screen/view_all_transactions.dart';
 import 'package:delayed_display/delayed_display.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -38,8 +39,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         vsync: this, duration: const Duration(milliseconds: 300));
     final curvedFloatingAnimation = CurvedAnimation(
         parent: floatingAnimationController,
-        curve: Curves.easeIn,
-        reverseCurve: Curves.easeInCirc);
+        curve: Curves.ease,
+        reverseCurve: Curves.ease);
     floatingAnimation =
         Tween<Offset>(begin: const Offset(0, 2), end: const Offset(0, 0))
             .animate(curvedFloatingAnimation);
@@ -73,7 +74,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       onDrawerChanged: (value) {
         if (value == false) {
           animationController.reverse();
+          floatingAnimationController.forward();
         } else {
+          floatingAnimationController.reverse();
           animationController.forward();
         }
       },
@@ -183,10 +186,29 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               ),
             ),
             const SizedBox(height: 10),
-            Text(
-              "Recent Transactions",
-              style:
-                  Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 22),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Recent transactions",
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge!
+                      .copyWith(fontSize: 22),
+                ),
+                InkWell(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(builder: (ctx)=>ViewAllTransactionScreen()));
+                  },
+                  child: Text(
+                    "View all",
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium!
+                        .copyWith(fontSize: 15),
+                  ),
+                )
+              ],
             ),
             const SizedBox(height: 10),
             Expanded(
@@ -219,7 +241,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                               ),
                             );
                           },
-                          itemCount: state.transactions.length,
+                          itemCount: state.transactions.length > 20
+                              ? 20
+                              : state.transactions.length,
                         ),
                       ),
                     );

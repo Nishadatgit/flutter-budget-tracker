@@ -2,8 +2,6 @@ import 'package:budget_tracker/core/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-
-
 class TransactionTile extends StatelessWidget {
   const TransactionTile({
     super.key,
@@ -45,7 +43,10 @@ class TransactionTile extends StatelessWidget {
         ),
         title: Text(
           title.toTitleCase(),
-          style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 19),
+          style: Theme.of(context)
+              .textTheme
+              .bodyLarge!
+              .copyWith(fontSize: 19, height: 0),
         ),
         subtitle: Text(
           category,

@@ -37,7 +37,7 @@ class AddTransactionScreen extends StatelessWidget {
                   tag: 'icon',
                   child: Icon(Icons.arrow_back_ios_new, size: 20))),
         ),
-        body: BlocConsumer<AddTransactionCubit, AddTransactionState>(
+        body: BlocBuilder<AddTransactionCubit, AddTransactionState>(
           builder: (ctx, state) {
             if (state is AddingTransaction) {
               return const Center(child: CircularProgressIndicator.adaptive());
@@ -220,25 +220,6 @@ class AddTransactionScreen extends StatelessWidget {
                 ],
               ),
             );
-          },
-          listener: (context, state) {
-            if (state is AddedTransaction) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(10),
-                      topRight: Radius.circular(10),
-                    ),
-                  ),
-                  content: Text("Added transaction",
-                      style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold)),
-                  duration: Duration(seconds: 1),
-                  backgroundColor: Colors.green,
-                ),
-              );
-            }
           },
         ));
   }

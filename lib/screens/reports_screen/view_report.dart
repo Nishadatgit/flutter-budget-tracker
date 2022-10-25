@@ -40,7 +40,7 @@ class ViewReport extends StatelessWidget {
                               CategoryType.expense
                           ? Colors.red
                           : Colors.green,
-                      category: transaction.category.categoryType.name,
+                      category: transaction.category.name,
                       title: transaction.purpose,
                       amount: transaction.amount,
                       date: transaction.date),
