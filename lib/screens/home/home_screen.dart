@@ -1,12 +1,13 @@
 import 'package:animations/animations.dart';
+import 'package:budget_tracker/db/reports_db/reports_db.dart';
 import 'package:budget_tracker/logic/theme/theme_cubit.dart';
 import 'package:budget_tracker/models/category/category_model.dart';
 import 'package:budget_tracker/screens/add_transaction/add_transaction_screen.dart';
-import 'package:budget_tracker/screens/category/category_screen.dart';
+import 'package:budget_tracker/screens/manage_categories/category_screen.dart';
 import 'package:budget_tracker/screens/home/widgets/card_info_widget.dart';
 import 'package:budget_tracker/screens/home/widgets/drawer_header.dart';
 import 'package:budget_tracker/screens/home/widgets/transaction_tile.dart';
-import 'package:budget_tracker/screens/reports_screen/reports_screen.dart';
+import 'package:budget_tracker/screens/home/widgets/reports_screen/reports_screen.dart';
 import 'package:budget_tracker/screens/view_all_transactions_screen/view_all_transactions.dart';
 import 'package:delayed_display/delayed_display.dart';
 import 'package:flutter/material.dart';
@@ -128,7 +129,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         child: Hero(
                           tag: 'name',
                           child: Text(
-                            "Categories",
+                            "Manage Categories",
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium!
@@ -153,7 +154,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         child: Hero(
                           tag: "name2",
                           child: Text(
-                            "Reports",
+                            "Category Reports",
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium!
@@ -166,6 +167,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       return const ReportsScreen();
                     },
                   ),
+                  ListTile(
+                    title: const Text("weekly reports"),
+                    onTap: () {
+                      ReportsDb().getTotalIncomeForTheSelectedMonth();
+                    },
+                  )
                 ],
               ),
             ),
@@ -183,30 +190,32 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               child: CardInfoWidget(amount: 35000),
             ),
             const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "Recent transactions",
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyLarge!
-                      .copyWith(fontSize: 22),
-                ),
-                InkWell(
-                  onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (ctx) => const ViewAllTransactionScreen()));
-                  },
-                  child: Text(
-                    "View all",
+            DelayedDisplay(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Recent transactions",
                     style: Theme.of(context)
                         .textTheme
-                        .bodyMedium!
-                        .copyWith(fontSize: 15),
+                        .bodyLarge!
+                        .copyWith(fontSize: 22),
                   ),
-                )
-              ],
+                  InkWell(
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (ctx) => const ViewAllTransactionScreen()));
+                    },
+                    child: Text(
+                      "View all",
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyMedium!
+                          .copyWith(fontSize: 15),
+                    ),
+                  )
+                ],
+              ),
             ),
             const SizedBox(height: 10),
             Expanded(

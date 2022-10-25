@@ -26,7 +26,7 @@ class CategoryScreen extends StatelessWidget {
           title: Hero(
             tag: 'name',
             child: Text(
-              "Categories",
+              "Manage Categories",
               style: Theme.of(context).textTheme.bodyLarge,
             ),
           ),

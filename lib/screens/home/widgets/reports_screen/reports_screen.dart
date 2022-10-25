@@ -1,8 +1,8 @@
 import 'package:animations/animations.dart';
 import 'package:budget_tracker/logic/category/category%20screen/category_cubit.dart';
 import 'package:budget_tracker/logic/reports/reports_cubit.dart';
-import 'package:budget_tracker/screens/reports_screen/view_report.dart';
-import 'package:budget_tracker/screens/reports_screen/widgets/category_tile.dart';
+import 'package:budget_tracker/screens/home/widgets/reports_screen/view_report.dart';
+import 'package:budget_tracker/screens/home/widgets/reports_screen/widgets/category_tile.dart';
 import 'package:delayed_display/delayed_display.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,7 +18,7 @@ class ReportsScreen extends StatelessWidget {
         title: Hero(
           tag: 'name2',
           child: Text(
-            "Reports",
+            "Category Reports",
             style: Theme.of(context).textTheme.bodyLarge,
           ),
         ),

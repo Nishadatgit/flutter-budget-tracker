@@ -47,4 +47,37 @@ class ReportsDb {
     };
     return data;
   }
+
+  Future<Map<String, dynamic>> getTotalIncomeForTheSelectedMonth() async {
+    double totalncomeOfTheMonth = 0;
+    double totalExpenseOfTheMoth = 0;
+    List<TransactionModel> incomesOfThisMonth = [];
+    List<TransactionModel> expensesOfThisMonth = [];
+    final box = await Hive.openBox<TransactionModel>(TRANSACTION_DB_NAME);
+    final transactions = box.values.toList();
+
+    await Future.forEach(transactions, (transaction) {
+      if (transaction.date.month == DateTime.now().month) {
+        if (transaction.category.categoryType == CategoryType.income) {
+          incomesOfThisMonth.add(transaction);
+        } else {
+          expensesOfThisMonth.add(transaction);
+        }
+      }
+    });
+    for (var incomeTransaction in incomesOfThisMonth) {
+      totalncomeOfTheMonth = totalncomeOfTheMonth + incomeTransaction.amount;
+    }
+    for (var expenseTransaction in expensesOfThisMonth) {
+      totalExpenseOfTheMoth = totalExpenseOfTheMoth + expenseTransaction.amount;
+    }
+
+    Map<String, dynamic> data = {
+      "income_transactions": incomesOfThisMonth,
+      "expense_transactions": expensesOfThisMonth,
+      "total_income": totalncomeOfTheMonth,
+      "total_expense": totalExpenseOfTheMoth
+    };
+    return data;
+  }
 }
