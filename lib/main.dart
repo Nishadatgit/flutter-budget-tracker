@@ -1,7 +1,6 @@
 import 'package:budget_tracker/logic/add_transaction/add_transaction_cubit.dart';
 import 'package:budget_tracker/logic/category/category screen/category_cubit.dart';
 import 'package:budget_tracker/logic/category/category%20selector/cubit/category_selector_cubit.dart';
-import 'package:budget_tracker/logic/home/cubit/recent_transactions_cubit.dart';
 import 'package:budget_tracker/logic/reports/reports_cubit.dart';
 import 'package:budget_tracker/logic/theme/theme_cubit.dart';
 import 'package:budget_tracker/models/category/category_model.dart';
@@ -10,6 +9,8 @@ import 'package:budget_tracker/screens/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/adapters.dart';
+
+import 'logic/home/recent_transactions/recent_transactions_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,9 +39,8 @@ class MyApp extends StatelessWidget {
             create: (ctx) => CategorySelectorCubit(),
           ),
           BlocProvider(create: (ctx) => RecentTransactionsCubit()),
-            BlocProvider(create: (ctx) => AddTransactionCubit()),
-              BlocProvider(create: (ctx) => ReportsCubit()),
-         
+          BlocProvider(create: (ctx) => AddTransactionCubit()),
+          BlocProvider(create: (ctx) => ReportsCubit()),
         ],
         child: BlocBuilder<ThemeCubit, ThemeData>(
           builder: (context, state) {

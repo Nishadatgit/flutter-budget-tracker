@@ -1,11 +1,10 @@
 import 'package:animations/animations.dart';
-import 'package:budget_tracker/logic/home/cubit/recent_transactions_cubit.dart';
 import 'package:budget_tracker/logic/theme/theme_cubit.dart';
 import 'package:budget_tracker/models/category/category_model.dart';
 import 'package:budget_tracker/screens/add_transaction/add_transaction_screen.dart';
 import 'package:budget_tracker/screens/category/category_screen.dart';
-import 'package:budget_tracker/screens/home/widgets/card_info_widget.dart';
 import 'package:budget_tracker/screens/home/widgets/drawer_header.dart';
+import 'package:budget_tracker/screens/home/widgets/pie_chart.dart';
 import 'package:budget_tracker/screens/home/widgets/transaction_tile.dart';
 import 'package:budget_tracker/screens/reports_screen/reports_screen.dart';
 import 'package:budget_tracker/screens/view_all_transactions_screen/view_all_transactions.dart';
@@ -13,6 +12,8 @@ import 'package:delayed_display/delayed_display.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../logic/home/recent_transactions/recent_transactions_cubit.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -178,13 +179,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              child: CardInfoWidget(
-                width: width,
-                amount: 20000,
-              ),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            //   child: CardInfoWidget(
+            //     width: width,
+            //     amount: 20000,
+            //   ),
+            // ),
+            PieChartSample2(),
             const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -198,7 +200,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 ),
                 InkWell(
                   onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (ctx)=>ViewAllTransactionScreen()));
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (ctx) => const ViewAllTransactionScreen()));
                   },
                   child: Text(
                     "View all",
