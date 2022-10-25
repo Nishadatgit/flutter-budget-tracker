@@ -27,4 +27,24 @@ class ReportsDb {
 
     return data;
   }
+
+  Future<Map<String, double>> getTotalData() async {
+    double totalIncome = 0;
+    double totalExpense = 0;
+
+    final box = await Hive.openBox<TransactionModel>(TRANSACTION_DB_NAME);
+
+    await Future.forEach(box.values.toList(), (item) {
+      if (item.category.categoryType == CategoryType.expense) {
+        totalExpense = totalExpense + item.amount;
+      } else {
+        totalIncome = totalIncome + item.amount;
+      }
+    });
+    final Map<String, double> data = {
+      "income": totalIncome,
+      "expense": totalExpense
+    };
+    return data;
+  }
 }

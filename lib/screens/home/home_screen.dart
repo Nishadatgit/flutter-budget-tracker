@@ -3,8 +3,8 @@ import 'package:budget_tracker/logic/theme/theme_cubit.dart';
 import 'package:budget_tracker/models/category/category_model.dart';
 import 'package:budget_tracker/screens/add_transaction/add_transaction_screen.dart';
 import 'package:budget_tracker/screens/category/category_screen.dart';
+import 'package:budget_tracker/screens/home/widgets/card_info_widget.dart';
 import 'package:budget_tracker/screens/home/widgets/drawer_header.dart';
-import 'package:budget_tracker/screens/home/widgets/pie_chart.dart';
 import 'package:budget_tracker/screens/home/widgets/transaction_tile.dart';
 import 'package:budget_tracker/screens/reports_screen/reports_screen.dart';
 import 'package:budget_tracker/screens/view_all_transactions_screen/view_all_transactions.dart';
@@ -67,8 +67,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-    //final height = MediaQuery.of(context).size.height;
     return Scaffold(
       drawerEnableOpenDragGesture: true,
       drawerEdgeDragWidth: 100,
@@ -179,14 +177,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Padding(
-            //   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            //   child: CardInfoWidget(
-            //     width: width,
-            //     amount: 20000,
-            //   ),
-            // ),
-            PieChartSample2(),
+            const DelayedDisplay(
+              slidingBeginOffset: Offset(10, 0),
+              fadingDuration: Duration(seconds: 1),
+              child: CardInfoWidget(amount: 35000),
+            ),
             const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -215,6 +210,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             ),
             const SizedBox(height: 10),
             Expanded(
+              flex: 2,
               child: BlocConsumer<RecentTransactionsCubit,
                   RecentTransactionsState>(
                 listener: (context, state) {},
