@@ -28,6 +28,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    precacheImage(const AssetImage("assets/images/mypic.jpg"), context);
     return MultiBlocProvider(
         providers: [
           BlocProvider(
