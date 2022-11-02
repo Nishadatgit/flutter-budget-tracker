@@ -1,5 +1,6 @@
 import 'package:budget_tracker/models/category/category_model.dart';
 import 'package:budget_tracker/screens/home/widgets/transaction_tile.dart';
+import 'package:delayed_display/delayed_display.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -30,20 +31,25 @@ class ViewAllTransactionScreen extends StatelessWidget {
           } else if (state is RecentTransactionsLoadedState) {
             final transactions = state.transactions.reversed.toList();
             return ListView.builder(
+              addAutomaticKeepAlives: true,
               itemBuilder: (ctx, index) {
                 final transaction = transactions[index];
-                return Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                  child: TransactionTile(
-                    tileColor: transaction.category.categoryType ==
-                            CategoryType.expense
-                        ? Colors.red
-                        : Colors.green,
-                    category: transaction.category.categoryType.name,
-                    title: transaction.purpose,
-                    amount: transaction.amount,
-                    date: transaction.date,
+                return DelayedDisplay(
+                  fadingDuration:
+                      Duration(milliseconds: index < 10 ? 100 * index : 500),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 10),
+                    child: TransactionTile(
+                      tileColor: transaction.category.categoryType ==
+                              CategoryType.expense
+                          ? Colors.red
+                          : Colors.green,
+                      category: transaction.category.categoryType.name,
+                      title: transaction.purpose,
+                      amount: transaction.amount,
+                      date: transaction.date,
+                    ),
                   ),
                 );
               },

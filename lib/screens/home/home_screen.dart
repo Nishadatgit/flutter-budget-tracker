@@ -1,5 +1,4 @@
 import 'package:animations/animations.dart';
-import 'package:budget_tracker/db/reports_db/reports_db.dart';
 import 'package:budget_tracker/logic/home/this_month/this_month_cubit.dart';
 import 'package:budget_tracker/logic/theme/theme_cubit.dart';
 import 'package:budget_tracker/models/category/category_model.dart';
@@ -191,7 +190,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       );
                     },
                     openBuilder: (context, action) {
-                      return BlocProvider(create: (context) => ThisMonthCubit(), child: const ThisMonthReportsScreen());
+                      return BlocProvider(
+                          create: (context) => ThisMonthCubit(),
+                          child: const ThisMonthReportsScreen());
                     },
                   ),
                 ],
@@ -206,7 +207,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const DelayedDisplay(
-              slidingBeginOffset: Offset(10, 0),
               fadingDuration: Duration(seconds: 1),
               child: CardInfoWidget(amount: 35000),
             ),
@@ -250,13 +250,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(10),
                           topRight: Radius.circular(10)),
-                      child: DelayedDisplay(
-                        child: ListView.builder(
-                          controller: scrollController,
-                          itemBuilder: (ctx, index) {
-                            final transaction =
-                                state.transactions.reversed.toList()[index];
-                            return Padding(
+                      child: ListView.builder(
+                        controller: scrollController,
+                        itemBuilder: (ctx, index) {
+                          final transaction =
+                              state.transactions.reversed.toList()[index];
+                          return DelayedDisplay(
+                            fadingDuration: Duration(
+                                milliseconds: index < 5 ? 100 * index : 500),
+                            child: Padding(
                               padding: const EdgeInsets.symmetric(vertical: 10),
                               child: TransactionTile(
                                 title: transaction.purpose,
@@ -268,12 +270,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                     : Colors.green,
                                 date: transaction.date,
                               ),
-                            );
-                          },
-                          itemCount: state.transactions.length > 20
-                              ? 20
-                              : state.transactions.length,
-                        ),
+                            ),
+                          );
+                        },
+                        itemCount: state.transactions.length > 20
+                            ? 20
+                            : state.transactions.length,
                       ),
                     );
                   } else if (state is RecentTransactionsLoadingState) {

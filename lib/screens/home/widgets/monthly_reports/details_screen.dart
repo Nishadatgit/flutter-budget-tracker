@@ -25,21 +25,29 @@ class ThisMonthDetilsScreen extends StatelessWidget {
           style: Theme.of(context).textTheme.bodyLarge,
         ),
       ),
-      body: ListView.builder(
-        itemBuilder: (context, index) {
-          final transaction = transactions[index];
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-            child: TransactionTile(
-                tileColor: title == "Income" ? Colors.green : Colors.red,
-                category: transaction.category.name,
-                title: transaction.purpose,
-                amount: transaction.amount,
-                date: transaction.date),
-          );
-        },
-        itemCount: transactions.length,
-      ),
+      body: transactions.isNotEmpty
+          ? ListView.builder(
+              itemBuilder: (context, index) {
+                final transaction = transactions[index];
+                return Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                  child: TransactionTile(
+                      tileColor: title == "Income" ? Colors.green : Colors.red,
+                      category: transaction.category.name,
+                      title: transaction.purpose,
+                      amount: transaction.amount,
+                      date: transaction.date),
+                );
+              },
+              itemCount: transactions.length,
+            )
+          : const Center(
+              child: Text(
+                "No transactions yet \nthis month",
+                textAlign: TextAlign.center,
+              ),
+            ),
     );
   }
 }

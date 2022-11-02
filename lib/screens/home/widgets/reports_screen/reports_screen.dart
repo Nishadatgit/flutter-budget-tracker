@@ -52,8 +52,11 @@ class ReportsScreen extends StatelessWidget {
                   final tileNames = data.keys.toList();
                   final arrayOfTransactions = data.values.toList();
                   return DelayedDisplay(
-                    fadingDuration: const Duration(milliseconds: 500),
-                    slidingBeginOffset: const Offset(5, 0),
+                    fadingDuration:
+                        Duration(milliseconds: index < 10 ? index * 100 : 500),
+                    slidingBeginOffset: index % 2 == 0
+                        ? const Offset(5, 0)
+                        : const Offset(0, 5),
                     child: OpenContainer(
                       closedColor: Colors.transparent,
                       openBuilder: (context, action) {
@@ -63,7 +66,6 @@ class ReportsScreen extends StatelessWidget {
                       },
                       closedBuilder: (context, action) {
                         return CategoryTile(
-                          
                           tileName: tileNames[index],
                           count: arrayOfTransactions[index].length,
                         );
