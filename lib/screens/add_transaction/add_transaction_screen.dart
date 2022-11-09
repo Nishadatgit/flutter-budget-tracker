@@ -1,5 +1,6 @@
 import 'package:budget_tracker/logic/add_transaction/add_transaction_cubit.dart';
 import 'package:budget_tracker/logic/category/category%20screen/category_cubit.dart';
+import 'package:budget_tracker/logic/home/todays_expense/todays_expense_cubit.dart';
 import 'package:budget_tracker/models/category/category_model.dart';
 import 'package:budget_tracker/models/transaction/transaction_model.dart';
 import 'package:delayed_display/delayed_display.dart';
@@ -175,6 +176,8 @@ class AddTransactionScreen extends StatelessWidget {
                               final provider =
                                   BlocProvider.of<RecentTransactionsCubit>(
                                       context);
+                              final expenseProvider =
+                                  BlocProvider.of<TodaysExpenseCubit>(context);
                               final navigator = Navigator.of(context);
                               final focus = FocusScope.of(context);
                               final amount =
@@ -198,6 +201,7 @@ class AddTransactionScreen extends StatelessWidget {
                                       context)
                                   .addTransaction(model);
                               provider.fetchAllRecentTransactions();
+                              expenseProvider.fetchTodaysExpense();
                               focus.unfocus();
                               navigator.pop();
 

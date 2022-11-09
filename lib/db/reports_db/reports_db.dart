@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_for_elements_to_map_fromiterable
+
 import 'package:budget_tracker/core/constants.dart';
 import 'package:budget_tracker/models/category/category_model.dart';
 import 'package:budget_tracker/models/transaction/transaction_model.dart';
@@ -79,5 +81,31 @@ class ReportsDb {
       "total_expense": totalExpenseOfTheMoth
     };
     return data;
+  }
+
+  // Future<void> getTotalIncomeCategoryWise()async{
+
+  //   final box = await Hive.openBox<TransactionModel>(TRANSACTION_DB_NAME);
+  //    final categoryBox = await Hive.openBox<CategoryModel>(CATEGORY_DB_NAME);
+  //   final List<String> categories =
+  //       categoryBox.values.map((e) => e.name).toList();
+  //   Map<String, List<TransactionModel>> data = Map.fromIterable(
+  //     categories,
+  //     key: (element) => element.,
+  //     value: (element) => [],
+  //   );
+
+  // }
+
+  Future<double> getTodaysExpense() async {
+    double expense = 0;
+    final box = await Hive.openBox<TransactionModel>(TRANSACTION_DB_NAME);
+    final transactions = box.values.toList();
+    await Future.forEach(transactions, (transaction) {
+      if (transaction.date.day == DateTime.now().day) {
+        expense = expense + transaction.amount;
+      }
+    });
+    return expense;
   }
 }

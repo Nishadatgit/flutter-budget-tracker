@@ -86,7 +86,6 @@ class CategoryScreen extends StatelessWidget {
                       return Padding(
                         padding: const EdgeInsets.only(top: 10),
                         child: DelayedDisplay(
-                      
                           fadingDuration: Duration(
                               milliseconds: index < 10 ? 100 * index : 500),
                           child: Padding(

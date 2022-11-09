@@ -15,7 +15,16 @@ class CategoryDb {
 
   Future<void> insertCategory(CategoryModel item) async {
     final box = await Hive.openBox<CategoryModel>(CATEGORY_DB_NAME);
-    await box.put(item.id, item);
+    final value = box.values.where((element) =>
+        element.name == item.name && element.categoryType == item.categoryType);
+    if (value.toList().length > 1) {
+      return;
+    }
+    if (value.isNotEmpty) {
+      box.put(value.toList()[0].id, item);
+    } else {
+      box.put(item.id, item);
+    }
   }
 
   Future<void> hideCategory(String id, CategoryModel item) async {

@@ -1,15 +1,15 @@
-
+import 'package:budget_tracker/logic/home/todays_expense/todays_expense_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CardInfoWidget extends StatelessWidget {
   const CardInfoWidget({
     super.key,
-    required this.amount,
   });
-  final double amount;
 
   @override
   Widget build(BuildContext context) {
+    BlocProvider.of<TodaysExpenseCubit>(context).fetchTodaysExpense();
     final width = MediaQuery.of(context).size.width;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -36,17 +36,32 @@ class CardInfoWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  "Your Balance",
+                  "Todays Expense",
                   style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                         fontSize: 20,
                         fontWeight: FontWeight.w400,
                       ),
                 ),
-                Text("\$$amount",
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyLarge!
-                        .copyWith(fontSize: 40)),
+                BlocBuilder<TodaysExpenseCubit, TodaysExpenseState>(
+                  builder: (context, state) {
+                    if (state is TodaysExpenseLoaded) {
+                      return Text("\$ ${state.amount}",
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyLarge!
+                              .copyWith(fontSize: 35));
+                    } else {
+                      return const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: Center(
+                            child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                        )),
+                      );
+                    }
+                  },
+                ),
               ],
             ),
           ),

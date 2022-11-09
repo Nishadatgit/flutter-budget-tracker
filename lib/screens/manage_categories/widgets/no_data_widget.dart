@@ -11,7 +11,10 @@ class NoDataWidget extends StatelessWidget {
         const Center(
           child: Padding(
             padding: EdgeInsets.only(bottom: 70),
-            child: TextAnimation(text: 'Nothing here..\n🔎'),
+            child: Text(
+              'Nothing here..\n🔎',
+              textAlign: TextAlign.center,
+            ),
           ),
         ),
         Positioned(

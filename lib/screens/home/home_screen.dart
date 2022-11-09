@@ -3,6 +3,7 @@ import 'package:budget_tracker/logic/home/this_month/this_month_cubit.dart';
 import 'package:budget_tracker/logic/theme/theme_cubit.dart';
 import 'package:budget_tracker/models/category/category_model.dart';
 import 'package:budget_tracker/screens/add_transaction/add_transaction_screen.dart';
+import 'package:budget_tracker/screens/home/widgets/chart/income_chart.dart';
 import 'package:budget_tracker/screens/home/widgets/monthly_reports/this_month_reports.dart';
 import 'package:budget_tracker/screens/manage_categories/category_screen.dart';
 import 'package:budget_tracker/screens/home/widgets/card_info_widget.dart';
@@ -14,6 +15,7 @@ import 'package:delayed_display/delayed_display.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../logic/home/recent_transactions/recent_transactions_cubit.dart';
 
@@ -206,9 +208,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const DelayedDisplay(
-              fadingDuration: Duration(seconds: 1),
-              child: CardInfoWidget(amount: 35000),
+            DelayedDisplay(
+              fadingDuration: const Duration(seconds: 1),
+              child: Container(
+                  padding: const EdgeInsets.all(10),
+                  child: const CardInfoWidget()),
             ),
             const SizedBox(height: 10),
             DelayedDisplay(
@@ -284,9 +288,22 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     );
                   } else if (state is RecentTransactionsEmptyState) {
                     return Center(
-                      child: Text(
-                        "No recent transactions",
-                        style: Theme.of(context).textTheme.bodyLarge,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: 150,
+                            height: 150,
+                            child: Lottie.asset("assets/lottie/nodata.json"),
+                          ),
+                          Text(
+                            "No recent transactions",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(),
+                          ),
+                        ],
                       ),
                     );
                   } else {

@@ -2,6 +2,7 @@ import 'package:budget_tracker/logic/add_transaction/add_transaction_cubit.dart'
 import 'package:budget_tracker/logic/category/category screen/category_cubit.dart';
 import 'package:budget_tracker/logic/category/category%20selector/cubit/category_selector_cubit.dart';
 import 'package:budget_tracker/logic/home/get_total/get_total_cubit.dart';
+import 'package:budget_tracker/logic/home/todays_expense/todays_expense_cubit.dart';
 import 'package:budget_tracker/logic/reports/reports_cubit.dart';
 import 'package:budget_tracker/logic/theme/theme_cubit.dart';
 import 'package:budget_tracker/models/category/category_model.dart';
@@ -44,6 +45,7 @@ class MyApp extends StatelessWidget {
           BlocProvider(create: (ctx) => AddTransactionCubit()),
           BlocProvider(create: (ctx) => ReportsCubit()),
           BlocProvider(create: (ctx) => GetTotalCubit()),
+           BlocProvider(create: (ctx) => TodaysExpenseCubit()),
         ],
         child: BlocBuilder<ThemeCubit, ThemeData>(
           builder: (context, state) {
@@ -53,7 +55,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-Widget _buildWithTheme(BuildContext context, state) {
+Widget _buildWithTheme(BuildContext context,ThemeData state) {
   return MaterialApp(
     title: 'Budget Tracker',
     theme: state,
